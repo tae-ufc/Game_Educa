@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class Player{
 	private Animator animPlayer;
-	private Rigidbody2D rgbPlayer;
+	public Rigidbody2D rgbPlayer;
 	private Vector2 forceJump;
 	private Vector3 scaleInicial;
-	private float speedPlayer = 10f, horizontal, vertical;
+	private float speedPlayer = 10f, horizontal;
 	private int idAnimation;
 	private Transform playerTransform;
 	public bool isGround;
+	private bool chave;
 	public Player(Animator animPlayer, Rigidbody2D rgbPlayer, Transform playerTransform){
 		this.animPlayer = animPlayer;
 		this.rgbPlayer = rgbPlayer;
 		this.playerTransform = playerTransform;
-		this.forceJump = new Vector2 (0, 500f);
+		this.forceJump = new Vector2 (0, 600f);
 		this.scaleInicial = playerTransform.localScale;
 	}
 	public void fixedUpdatePlayer(){
@@ -23,19 +24,22 @@ public class Player{
 	}
 	public void inputControllerPlayer(){
 		horizontal = Input.GetAxisRaw ("Horizontal");
-		vertical =  Input.GetAxisRaw ("Vertical");
-
 		if (horizontal > 0) {
 			idAnimation = 1;
 			playerTransform.localScale = scaleInicial;
 			rgbPlayer.velocity = new Vector2 (speedPlayer, rgbPlayer.velocity.y);
+			chave = true;
 		} else if (horizontal < 0) {
 			idAnimation = 1;
 			playerTransform.localScale = new Vector3(-1*scaleInicial.x,scaleInicial.y,scaleInicial.z);
 			rgbPlayer.velocity = new Vector2 (-speedPlayer, rgbPlayer.velocity.y);
+			chave = true;
 		} else if (horizontal == 0) {
-			rgbPlayer.velocity = new Vector2 (0, rgbPlayer.velocity.y);
-			idAnimation = 0;
+			if (chave) {
+				rgbPlayer.velocity = new Vector2 (0, rgbPlayer.velocity.y);
+				idAnimation = 0;
+				chave = false;
+			}
 		}
 		if (Input.GetButtonDown ("Jump")&&isGround) {
 			rgbPlayer.AddForce (forceJump);
