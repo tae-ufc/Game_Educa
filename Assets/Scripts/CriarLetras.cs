@@ -7,6 +7,7 @@ public class CriarLetras : MonoBehaviour {
 
 	public string palavra;
 	public GameObject bloco;
+	public int quantBlocos;
 	public Transform parentBloco;
 	private GameObject[] arrayObjetos;
 	private Animator anim;
@@ -14,6 +15,13 @@ public class CriarLetras : MonoBehaviour {
 	void Start () {
 		anim = GetComponent<Animator> ();
 		//instanciarPalavra (palavra);
+		arrayObjetos = new GameObject[quantBlocos];
+		for (int cont = 0; cont < quantBlocos; cont++) {
+			GameObject objeto = Instantiate (bloco, parentBloco, true);
+			arrayObjetos [cont] = objeto;
+			objeto.transform.localPosition = Vector3.zero;
+			objeto.SetActive (false);
+		}
 	}
 	private Color randomColor(){
 		Color cor = new Color();
@@ -38,19 +46,20 @@ public class CriarLetras : MonoBehaviour {
 
 	}
 	public void instanciarPalavra(string palavra){
+		try{
 		if (chave) {
 			anim.SetBool ("sair", false);
 			float distance = 0;
 			int cont = 0;
-			arrayObjetos = new GameObject[palavra.Length];
 			gameObject.SetActive (false);
 			foreach (char letra in palavra) {
-				GameObject objeto = Instantiate (bloco, parentBloco, true);
-				arrayObjetos [cont] = objeto;
+					GameObject objeto = arrayObjetos [cont];
+				//arrayObjetos [cont] = objeto;
+					objeto.SetActive(true);
 				objeto.transform.localPosition = new Vector3 (distance,
 					0, objeto.transform.localPosition.z);
 				objeto.GetComponentInChildren<Text> ().text = letra.ToString ();
-				distance += 1.5f;
+				distance += 135f;
 				foreach (Image imageFilho in objeto.GetComponentsInChildren<Image> ()) {
 					if (imageFilho.gameObject.name == "BlocoLetra_1") {
 						imageFilho.color = randomColor ();
@@ -58,10 +67,13 @@ public class CriarLetras : MonoBehaviour {
 				}
 				cont++;
 			}
-			parentBloco.localPosition = new Vector3 (-((distance - 1.4f)) / 2, parentBloco.localPosition.y,
+			parentBloco.localPosition = new Vector3 (-((distance - 135f)) / 2, parentBloco.localPosition.y,
 				parentBloco.localPosition.z);
 			gameObject.SetActive (true);
 			chave = false;
+		}
+		}catch(System.Exception e){
+			GameObject.Find ("Erro").GetComponent<Text> ().text = e.ToString ();
 		}
 
 	}
@@ -70,7 +82,7 @@ public class CriarLetras : MonoBehaviour {
 	}
 	public void destruirObjeto(){
 		foreach (GameObject objeto in arrayObjetos) {
-			Destroy (objeto);
+			objeto.SetActive (false);
 		}
 		chave = true;
 	}

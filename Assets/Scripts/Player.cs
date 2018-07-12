@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player{
-	private Animator animPlayer;
+	public Animator animPlayer;
 	public Rigidbody2D rgbPlayer;
 	private Vector2 forceJump;
 	private Vector3 scaleInicial;

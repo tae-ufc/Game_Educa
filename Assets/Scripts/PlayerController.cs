@@ -7,7 +7,9 @@ public class PlayerController : MonoBehaviour {
 	public LayerMask layerGound;
 	public Transform groundCheckLeft,groundCheckRight;
 	private Player playerScript;
+	public bool ativarControlles;
 	void Start () {
+		Camera.main.aspect = 1920f / 1080f;
 		playerScript = new Player (GetComponent<Animator> (), GetComponent<Rigidbody2D> (), transform);
 	}
 	void FixedUpdate(){
@@ -16,7 +18,11 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
 		playerScript.isGround = (Physics2D.OverlapCircle (groundCheckRight.position, 0.01f, layerGound) || 
 			Physics2D.OverlapCircle (groundCheckLeft.position, 0.01f, layerGound)) && playerScript.rgbPlayer.velocity.y<=0  ;
-		playerScript.inputControllerPlayer ();
+		if (ativarControlles) {
+			playerScript.inputControllerPlayer ();
+		} else {
+			playerScript.animPlayer.SetBool ("isGround", playerScript.isGround);
+		}
 	}
 	void OnCollisionEnter2D(Collision2D objeto){
 		if (objeto.gameObject.CompareTag ("MovimentPlataform")) {
