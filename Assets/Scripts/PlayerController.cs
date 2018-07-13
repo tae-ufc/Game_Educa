@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour {
 			}
 
 		}
+
 	}
 	void OnCollisionStay2D(Collision2D objeto){
 		if (objeto.gameObject.CompareTag ("MovimentPlataform")) {
@@ -45,5 +46,11 @@ public class PlayerController : MonoBehaviour {
 
 		}
 
+	}
+	void OnTriggerEnter2D(Collider2D objeto){
+		if(objeto.gameObject.CompareTag ("Letra")){
+			objeto.gameObject.GetComponent<Animator> ().SetTrigger ("Pegou");
+			print ("Entrou");
+		}
 	}
 }
