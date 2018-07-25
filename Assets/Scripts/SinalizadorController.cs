@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 using UnityEngine;
 
 public class SinalizadorController : MonoBehaviour {
@@ -7,24 +8,37 @@ public class SinalizadorController : MonoBehaviour {
 	public GameObject Ativado, Desativado;
 	public string palavra;
 	private CriarLetras criaLetras;
-	public SpriteGlow.SpriteGlowEffect spriteGlow;
+	public SpriteGlow.SpriteGlowEffect[] spriteGlow;
+	public UnityEvent ativarEvento;
+	private AudioController audioController;
 	void Start(){
+		audioController = GetComponent<AudioController> ();
 		criaLetras = Object.FindObjectOfType<CriarLetras> ();
-		spriteGlow.enabled = false;
+		foreach (SpriteGlow.SpriteGlowEffect outlineScript  in spriteGlow) {
+			outlineScript.enabled = false;
+		}
 	}
 	void OnTriggerEnter2D(Collider2D objeto){
 		if (objeto.gameObject.CompareTag ("Player")) {
 			Ativado.SetActive (true);
 			Desativado.SetActive (false);
 			criaLetras.instanciarPalavra (palavra);
-			spriteGlow.enabled = true;
+			foreach (SpriteGlow.SpriteGlowEffect outlineScript  in spriteGlow) {
+				outlineScript.enabled = true;
+			}
+			audioController.PlayOneShootAudioClip (0);
+			if (ativarEvento != null) {
+				ativarEvento.Invoke ();
+			}
 		}
 
 	}
 	void OnTriggerStay2D(Collider2D objeto){
 		if (objeto.gameObject.CompareTag ("Player")) {
 			criaLetras.instanciarPalavra (palavra);
-			spriteGlow.enabled = true;
+			foreach (SpriteGlow.SpriteGlowEffect outlineScript  in spriteGlow) {
+				outlineScript.enabled = true;
+			}
 		}
 
 	}
@@ -33,7 +47,9 @@ public class SinalizadorController : MonoBehaviour {
 			Ativado.SetActive (false);
 			Desativado.SetActive (true);
 			criaLetras.terminarPalavra ();
-			spriteGlow.enabled = false;
+			foreach (SpriteGlow.SpriteGlowEffect outlineScript  in spriteGlow) {
+				outlineScript.enabled = false;
+			}
 		}
 
 	}

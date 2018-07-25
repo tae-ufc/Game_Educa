@@ -12,12 +12,14 @@ public class Player{
 	private Transform playerTransform;
 	public bool isGround;
 	private bool chave;
-	public Player(Animator animPlayer, Rigidbody2D rgbPlayer, Transform playerTransform){
+	private AudioController audioController;
+	public Player(Animator animPlayer, Rigidbody2D rgbPlayer, Transform playerTransform, AudioController audioController){
 		this.animPlayer = animPlayer;
 		this.rgbPlayer = rgbPlayer;
 		this.playerTransform = playerTransform;
 		this.forceJump = new Vector2 (0, 600f);
 		this.scaleInicial = playerTransform.localScale;
+		this.audioController = audioController;
 	}
 	public void fixedUpdatePlayer(){
 		animPlayer.SetFloat ("speedY", rgbPlayer.velocity.y);
@@ -43,8 +45,14 @@ public class Player{
 		}
 		if (Input.GetButtonDown ("Jump")&&isGround) {
 			rgbPlayer.AddForce (forceJump);
+			audioController.PlayOneShootAudioClip (0);
 		}
 		animPlayer.SetInteger ("idAnimation", idAnimation);
+		animPlayer.SetBool ("isGround", isGround);
+	}
+	public void stopPlayer(){
+		rgbPlayer.velocity = new Vector2 (0, rgbPlayer.velocity.y);
+		animPlayer.SetInteger ("idAnimation", 0);
 		animPlayer.SetBool ("isGround", isGround);
 	}
 
